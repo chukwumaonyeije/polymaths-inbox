@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Card from './Card';
 
-const Dashboard = ({ items, onRefresh }) => {
+const Dashboard = ({ items, onRefresh, apiUrl }) => {
     const [showArchived, setShowArchived] = useState(false);
 
     // Filter items based on status
@@ -37,7 +37,7 @@ const Dashboard = ({ items, onRefresh }) => {
 
                         <div className="space-y-4">
                             {tasks.map((item) => (
-                                <Card key={item.id} item={item} onRefresh={onRefresh} />
+                                <Card key={item.id} item={item} onRefresh={onRefresh} apiUrl={apiUrl} />
                             ))}
                             {tasks.length === 0 && (
                                 <div className="text-zinc-600 italic text-center py-10 border border-dashed border-zinc-800 rounded-lg">
@@ -57,7 +57,7 @@ const Dashboard = ({ items, onRefresh }) => {
 
                         <div className="grid grid-cols-1 gap-4">
                             {knowledge.map((item) => (
-                                <Card key={item.id} item={item} onRefresh={onRefresh} />
+                                <Card key={item.id} item={item} onRefresh={onRefresh} apiUrl={apiUrl} />
                             ))}
                             {knowledge.length === 0 && (
                                 <div className="text-zinc-600 italic text-center py-10 border border-dashed border-zinc-800 rounded-lg">
@@ -78,7 +78,7 @@ const Dashboard = ({ items, onRefresh }) => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 opacity-75">
                         {archivedItems.map((item) => (
-                            <Card key={item.id} item={item} onRefresh={onRefresh} />
+                            <Card key={item.id} item={item} onRefresh={onRefresh} apiUrl={apiUrl} />
                         ))}
                         {archivedItems.length === 0 && (
                             <div className="col-span-full text-zinc-600 italic text-center py-12 border border-dashed border-zinc-800 rounded-lg">

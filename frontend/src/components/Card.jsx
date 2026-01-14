@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Card = ({ item, onRefresh }) => {
+const Card = ({ item, onRefresh, apiUrl }) => {
     const isMedical = item.tags.includes('Medical');
     const isTheology = item.tags.includes('Theology');
     const isTask = item.tags.toLowerCase().includes('action') || item.tags.toLowerCase().includes('todo');
@@ -15,7 +15,7 @@ const Card = ({ item, onRefresh }) => {
 
     const handleStatusUpdate = async (status) => {
         try {
-            await fetch(`http://localhost:8000/items/${item.id}/status`, {
+            await fetch(`${apiUrl}/items/${item.id}/status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status })
@@ -23,12 +23,13 @@ const Card = ({ item, onRefresh }) => {
             onRefresh();
         } catch (e) {
             console.error(e);
+            alert("API Error: Check connection settings.");
         }
     };
 
     const handleConvert = async (taskContent) => {
         try {
-            await fetch(`http://localhost:8000/items/${item.id}/convert`, {
+            await fetch(`${apiUrl}/items/${item.id}/convert`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ task_content: taskContent })
@@ -36,6 +37,7 @@ const Card = ({ item, onRefresh }) => {
             onRefresh();
         } catch (e) {
             console.error(e);
+            alert("API Error: Check connection settings.");
         }
     };
 
