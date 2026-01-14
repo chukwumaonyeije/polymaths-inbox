@@ -7,9 +7,18 @@ function App() {
   const [apiUrl, setApiUrl] = useState(localStorage.getItem('polymath_api_url') || 'http://localhost:8000');
   const [showSettings, setShowSettings] = useState(false);
 
+  // Common headers for all requests to ensure Ngrok works
+  const getHeaders = () => ({
+    'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true'
+  });
+
   const fetchItems = async () => {
     try {
-      const res = await fetch(`${apiUrl}/items`);
+      const res = await fetch(`${apiUrl}/items`, {
+        headers: getHeaders()
+      });
+      if (!res.ok) throw new Error('Network response was not ok');
       const data = await res.json();
       setItems(data);
     } catch (e) {
@@ -37,7 +46,7 @@ function App() {
     try {
       await fetch(`${apiUrl}/input`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getHeaders(),
         body: JSON.stringify({ content, type })
       });
       fetchItems();
@@ -50,9 +59,15 @@ function App() {
   const handleFileUpload = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
+
+    // Note: FormData request automatically sets Content-Type to multipart/form-data
+    // So we only add the custom header
     try {
       await fetch(`${apiUrl}/upload`, {
         method: 'POST',
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        },
         body: formData
       });
       fetchItems();
@@ -62,10 +77,6 @@ function App() {
     }
   };
 
-  // Pass API URL to children if they need it (Dashboard -> Card) for actions
-  // Actually, Card needs it. We can cloneElement or pass via Dashboard.
-  // Implementation update: Pass apiUrl to Dashboard -> Card.
-
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-200 selection:bg-blue-500/30 font-sans pb-20">
       <div className="max-w-6xl mx-auto px-6 pt-12">
@@ -74,7 +85,7 @@ function App() {
             <h1 className="text-4xl font-extrabold text-white tracking-tight">
               The Polymath’s Inbox
             </h1>
-            <span className="text-zinc-500 font-mono text-sm">v1.1.0 // {apiUrl.includes('localhost') ? 'LOCAL' : 'REMOTE'}</span>
+            <span className="text-zinc-500 font-mono text-sm">v1.1.1 // {apiUrl.includes('localhost') ? 'LOCAL' : 'REMOTE'}</span>
           </div>
           <button
             onClick={() => setShowSettings(!showSettings)}

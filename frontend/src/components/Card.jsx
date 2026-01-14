@@ -7,6 +7,12 @@ const Card = ({ item, onRefresh, apiUrl }) => {
 
     const [showConvertMenu, setShowConvertMenu] = useState(false);
 
+    // Helper for headers
+    const getHeaders = () => ({
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true'
+    });
+
     const accentColor = isMedical
         ? 'border-emerald-500/50 bg-emerald-500/5'
         : isTheology
@@ -17,7 +23,7 @@ const Card = ({ item, onRefresh, apiUrl }) => {
         try {
             await fetch(`${apiUrl}/items/${item.id}/status`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getHeaders(),
                 body: JSON.stringify({ status })
             });
             onRefresh();
@@ -31,7 +37,7 @@ const Card = ({ item, onRefresh, apiUrl }) => {
         try {
             await fetch(`${apiUrl}/items/${item.id}/convert`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getHeaders(),
                 body: JSON.stringify({ task_content: taskContent })
             });
             onRefresh();
